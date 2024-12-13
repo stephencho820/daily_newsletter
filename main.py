@@ -34,10 +34,6 @@ def main():
 
         print("HTML file saved as 'output.html'")
 
-        # if select_domain == "esg1":
-        #     tags = ['ESG', 'DT', 'DX', '일일브리핑']
-        #     post_to_naver_cafe(title, result_html, tags)
-
     except Exception as e:
         logging.error("An error occurred", exc_info=True)
 
