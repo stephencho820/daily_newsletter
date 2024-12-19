@@ -1,0 +1,47 @@
+name: Daily Tistory Uploader
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # 매일 오전 9시 (UTC)
+  workflow_dispatch:      # 수동 실행 가능
+
+jobs:
+  run-daily-newsletter:
+    runs-on: ubuntu-latest  # GitHub Actions의 Ubuntu 환경
+
+    steps:
+      # 1. 저장소 체크아웃
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Python 환경 설정
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      # 3. Chrome 및 ChromeDriver 설치
+      - name: Install Chrome and ChromeDriver
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
+          wget -N https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          sudo mv chromedriver /usr/local/bin/
+          sudo chmod +x /usr/local/bin/chromedriver
+
+      # 4. 의존성 설치
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install selenium
+
+      # 5. Python 스크립트 실행 (입력값 자동화)
+      - name: Run main.py - First Execution
+        run: |
+          echo -e "2\n2" | python main.py
+
+      - name: Run main.py - Second Execution
+        run: |
+          echo -e "1\n2" | python main.py
